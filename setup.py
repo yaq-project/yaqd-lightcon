@@ -34,7 +34,7 @@ setup(
     author="yaq Developers",
     license="LGPL v3",
     url="http://gitlab.com/yaq/yaqd-lightcon",
-    entry_points={"console_scripts": ["yaqd-topas=yaqd_lightcon._topas:TopasDaemon.main"]},
+    entry_points={"console_scripts": ["yaqd-topas4=yaqd_lightcon._topas4:Topas4.main"]},
     keywords="spectroscopy science multidimensional hardware",
     classifiers=[
         "Development Status :: 1 - Planning",

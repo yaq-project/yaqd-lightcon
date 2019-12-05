@@ -7,17 +7,20 @@ import yaqd_core
 
 
 class Topas4(yaqd_core.Base):
+    _kind="topas4"
     def __init__(self, name: str, config: Dict[str, Any], config_filepath: pathlib.Path):
         super().__init__(name, config, config_filepath)
         self._base_url = config["base_url"]
         self._http_session = aiohttp.ClientSession()
         self._motors = {}
         self._shutter_status = False
+        self._shutter_target = False
         self._loop.create_task(self._populate_motors_dict())
 
     async def _populate_motors_dict(self):
         async with self._http_session.get(f"{self._base_url}/Motors/AllProperties") as resp:
-            self._motors = {m["Title"]: {"index": m["Index"]} for m in resp.json()["Motors"]}
+            json = await resp.json()
+            self._motors = {m["Title"]: {"index": m["Index"]} for m in json["Motors"]}
 
     async def update_state(self):
         while True:
@@ -25,21 +28,20 @@ class Topas4(yaqd_core.Base):
                 async with self._http_session.get(
                     f"{self._base_url}/Motors?id={info['index']}"
                 ) as resp:
-                    json = resp.json()
+                    json = await resp.json()
                     info["position"] = json["ActualPositionInUnits"]
-                    info["target"] = json["TargetPositionInUnits"]
                     info["range"] = (
                         json["MinimalPositionInUnits"],
                         json["MaximalPositionInUnits"],
                     )
-                    info["busy"] = json["ActualPosition"] != json["TargetPosition"]
-            self._busy = any(i["busy"] for i in self._motors.values())
+                    info["busy"] = abs(info["position"] - json["TargetPosition"]) < 0.1 or json["IsHoming"]
             async with self._http_session.get(
                 f"{self._base_url}/ShutterInterlock/IsShutterOpen"
             ) as resp:
-                self._shutter_status = resp.json()
+                self._shutter_status = await resp.json()
+            self._busy = any(i.get("busy", True) for i in self._motors.values()) or self._shutter_status != self._shutter_target
             if not self._busy:
-                await self._busy_sig
+                await self._busy_sig.wait()
             else:
                 await asyncio.sleep(0.01)
 
@@ -57,9 +59,10 @@ class Topas4(yaqd_core.Base):
 
     @yaqd_core.set_action
     def set_motor_position(self, motor, position):
+        self._motors[motor]["target"]=position
         self._loop.create_task(
             self._http_session.put(
-                f"{self._base_url}/Motors/TargetPositionInUnits?id={self._motors['index']}",
+                f"{self._base_url}/Motors/TargetPositionInUnits?id={self._motors[motor]['index']}",
                 json=position,
             )
         )
@@ -67,7 +70,7 @@ class Topas4(yaqd_core.Base):
     @yaqd_core.set_action
     def home_motor(self, motor):
         self._loop.create_task(
-            self._http_session.post(f"{self._base_url}/Motors/Home?id={self._motors['index']}")
+            self._http_session.post(f"{self._base_url}/Motors/Home?id={self._motors[motor]['index']}")
         )
 
     def get_shutter(self):
@@ -75,6 +78,7 @@ class Topas4(yaqd_core.Base):
 
     @yaqd_core.set_action
     def set_shutter(self, state):
+        self._shutter_target = state
         self._loop.create_task(
             self._http_session.put(
                 f"{self._base_url}/ShutterInterlock/OpenCloseShutter", json=bool(state)
