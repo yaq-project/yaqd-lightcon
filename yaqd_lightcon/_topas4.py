@@ -1,0 +1,82 @@
+import asyncio
+import pathlib
+from typing import Dict, Any
+
+import aiohttp
+import yaqd_core
+
+
+class Topas4(yaqd_core.Base):
+    def __init__(self, name: str, config: Dict[str, Any], config_filepath: pathlib.Path):
+        super().__init__(name, config, config_filepath)
+        self._base_url = config["base_url"]
+        self._http_session = aiohttp.ClientSession()
+        self._motors = {}
+        self._shutter_status = False
+        self._loop.create_task(self._populate_motors_dict())
+
+    async def _populate_motors_dict(self):
+        async with self._http_session.get(f"{self._base_url}/Motors/AllProperties") as resp:
+            self._motors = {m["Title"]: {"index": m["Index"]} for m in resp.json()["Motors"]}
+
+    async def update_state(self):
+        while True:
+            for info in self._motors.values():
+                async with self._http_session.get(
+                    f"{self._base_url}/Motors?id={info['index']}"
+                ) as resp:
+                    json = resp.json()
+                    info["position"] = json["ActualPositionInUnits"]
+                    info["target"] = json["TargetPositionInUnits"]
+                    info["range"] = (
+                        json["MinimalPositionInUnits"],
+                        json["MaximalPositionInUnits"],
+                    )
+                    info["busy"] = json["ActualPosition"] != json["TargetPosition"]
+            self._busy = any(i["busy"] for i in self._motors.values())
+            async with self._http_session.get(
+                f"{self._base_url}/ShutterInterlock/IsShutterOpen"
+            ) as resp:
+                self._shutter_status = resp.json()
+            if not self._busy:
+                await self._busy_sig
+            else:
+                await asyncio.sleep(0.01)
+
+    def get_state(self):
+        return {"motors": self._motors, "shutter": self._shutter_status}
+
+    def is_motor_busy(self, motor):
+        return self._motors[motor]["busy"]
+
+    def get_motor_range(self, motor):
+        return self._motors[motor]["range"]
+
+    def get_motor_position(self, motor):
+        return self._motors[motor]["position"]
+
+    @yaqd_core.set_action
+    def set_motor_position(self, motor, position):
+        self._loop.create_task(
+            self._http_session.put(
+                f"{self._base_url}/Motors/TargetPositionInUnits?id={self._motors['index']}",
+                json=position,
+            )
+        )
+
+    @yaqd_core.set_action
+    def home_motor(self, motor):
+        self._loop.create_task(
+            self._http_session.post(f"{self._base_url}/Motors/Home?id={self._motors['index']}")
+        )
+
+    def get_shutter(self):
+        return self._shutter_status
+
+    @yaqd_core.set_action
+    def set_shutter(self, state):
+        self._loop.create_task(
+            self._http_session.put(
+                f"{self._base_url}/ShutterInterlock/OpenCloseShutter", json=bool(state)
+            )
+        )
