@@ -4,6 +4,8 @@ from typing import Dict, Any
 
 import aiohttp
 import yaqd_core
+logger = yaqd_core.logging.getLogger(__name__)
+logger.setLevel(yaqd_core.logging.DEBUG)
 
 
 class Topas4(yaqd_core.Base):
@@ -20,7 +22,7 @@ class Topas4(yaqd_core.Base):
     async def _populate_motors_dict(self):
         async with self._http_session.get(f"{self._base_url}/Motors/AllProperties") as resp:
             json = await resp.json()
-            self._motors = {m["Title"]: {"index": m["Index"]} for m in json["Motors"]}
+            self._motors = {m["Title"]: {"index": m["Index"], "target": m["TargetPositionInUnits"]} for m in json["Motors"]}
 
     async def update_state(self):
         while True:
@@ -34,7 +36,10 @@ class Topas4(yaqd_core.Base):
                         json["MinimalPositionInUnits"],
                         json["MaximalPositionInUnits"],
                     )
-                    info["busy"] = abs(info["position"] - json["TargetPosition"]) < 0.1 or json["IsHoming"]
+                    logger.debug(f"{json['ActualPosition']}, {json['TargetPosition']}")
+                    logger.debug(f"{info.get('target')}, {json['TargetPositionInUnits']}")
+                    
+                    info["busy"] = json["ActualPosition"] != json["TargetPosition"] or abs(json["TargetPositionInUnits"] - info.get("target", 0)) > 0.01 or json["IsHoming"]
             async with self._http_session.get(
                 f"{self._base_url}/ShutterInterlock/IsShutterOpen"
             ) as resp:
@@ -60,18 +65,21 @@ class Topas4(yaqd_core.Base):
     @yaqd_core.set_action
     def set_motor_position(self, motor, position):
         self._motors[motor]["target"]=position
+        self._motors[motor]["busy"]=True
         self._loop.create_task(
-            self._http_session.put(
-                f"{self._base_url}/Motors/TargetPositionInUnits?id={self._motors[motor]['index']}",
-                json=position,
-            )
+                self._http_session.put(
+                    f"{self._base_url}/Motors/TargetPositionInUnits?id={self._motors[motor]['index']}",
+                    json=position,
+                )
         )
 
     @yaqd_core.set_action
     def home_motor(self, motor):
+        self._motors[motor]["busy"]=True
         self._loop.create_task(
             self._http_session.post(f"{self._base_url}/Motors/Home?id={self._motors[motor]['index']}")
         )
+        self.set_shutter(self._shutter_target)
 
     def get_shutter(self):
         return self._shutter_status
@@ -80,7 +88,7 @@ class Topas4(yaqd_core.Base):
     def set_shutter(self, state):
         self._shutter_target = state
         self._loop.create_task(
-            self._http_session.put(
-                f"{self._base_url}/ShutterInterlock/OpenCloseShutter", json=bool(state)
+                self._http_session.put(
+                    f"{self._base_url}/ShutterInterlock/OpenCloseShutter", json=bool(state)
             )
         )
