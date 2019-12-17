@@ -5,7 +5,7 @@ from typing import Dict, Any
 import aiohttp
 import yaqd_core
 logger = yaqd_core.logging.getLogger(__name__)
-logger.setLevel(yaqd_core.logging.DEBUG)
+logger.setLevel(yaqd_core.logging.INFO)
 
 
 class Topas4(yaqd_core.Base):
@@ -36,8 +36,6 @@ class Topas4(yaqd_core.Base):
                         json["MinimalPositionInUnits"],
                         json["MaximalPositionInUnits"],
                     )
-                    logger.debug(f"{json['ActualPosition']}, {json['TargetPosition']}")
-                    logger.debug(f"{info.get('target')}, {json['TargetPositionInUnits']}")
                     
                     info["busy"] = json["ActualPosition"] != json["TargetPosition"] or abs(json["TargetPositionInUnits"] - info.get("target", 0)) > 0.01 or json["IsHoming"]
             async with self._http_session.get(
@@ -75,10 +73,15 @@ class Topas4(yaqd_core.Base):
 
     @yaqd_core.set_action
     def home_motor(self, motor):
+        self._loop.create_task(self._home_motor(motor))
+    
+    async def _home_motor(self, motor):
+        await self._http_session.post(f"{self._base_url}/Motors/Home?id={self._motors[motor]['index']}")
         self._motors[motor]["busy"]=True
-        self._loop.create_task(
-            self._http_session.post(f"{self._base_url}/Motors/Home?id={self._motors[motor]['index']}")
-        )
+        while self.is_motor_busy(motor):
+            logger.debug(f"Waiting because {motor} is busy")
+            await asyncio.sleep(0.001)
+        logger.debug(f"resetting {motor} shutter to {self._shutter_target}")
         self.set_shutter(self._shutter_target)
 
     def get_shutter(self):
