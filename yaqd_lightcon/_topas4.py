@@ -4,17 +4,19 @@ from typing import Dict, Any
 
 import aiohttp
 import yaqd_core
+
 logger = yaqd_core.logging.getLogger(__name__)
 logger.setLevel(yaqd_core.logging.INFO)
 
 
 class Topas4(yaqd_core.Base):
-    _kind="topas4"
+    _kind = "topas4"
+
     def __init__(self, name: str, config: Dict[str, Any], config_filepath: pathlib.Path):
         super().__init__(name, config, config_filepath)
         self._base_url = config["base_url"]
         self._http_session = aiohttp.ClientSession()
-        self._motors = {}
+        self._motors: Dict[str, Dict[str, Any]] = {}
         self._shutter_status = False
         self._shutter_target = False
         self._loop.create_task(self._populate_motors_dict())
@@ -22,7 +24,10 @@ class Topas4(yaqd_core.Base):
     async def _populate_motors_dict(self):
         async with self._http_session.get(f"{self._base_url}/Motors/AllProperties") as resp:
             json = await resp.json()
-            self._motors = {m["Title"]: {"index": m["Index"], "target": m["TargetPositionInUnits"]} for m in json["Motors"]}
+            self._motors = {
+                m["Title"]: {"index": m["Index"], "target": m["TargetPositionInUnits"]}
+                for m in json["Motors"]
+            }
 
     async def update_state(self):
         while True:
@@ -36,13 +41,20 @@ class Topas4(yaqd_core.Base):
                         json["MinimalPositionInUnits"],
                         json["MaximalPositionInUnits"],
                     )
-                    
-                    info["busy"] = json["ActualPosition"] != json["TargetPosition"] or abs(json["TargetPositionInUnits"] - info.get("target", 0)) > 0.01 or json["IsHoming"]
+
+                    info["busy"] = (
+                        json["ActualPosition"] != json["TargetPosition"]
+                        or abs(json["TargetPositionInUnits"] - info.get("target", 0)) > 0.01
+                        or json["IsHoming"]
+                    )
             async with self._http_session.get(
                 f"{self._base_url}/ShutterInterlock/IsShutterOpen"
             ) as resp:
                 self._shutter_status = await resp.json()
-            self._busy = any(i.get("busy", True) for i in self._motors.values()) or self._shutter_status != self._shutter_target
+            self._busy = (
+                any(i.get("busy", True) for i in self._motors.values())
+                or self._shutter_status != self._shutter_target
+            )
             if not self._busy:
                 await self._busy_sig.wait()
             else:
@@ -62,22 +74,24 @@ class Topas4(yaqd_core.Base):
 
     @yaqd_core.set_action
     def set_motor_position(self, motor, position):
-        self._motors[motor]["target"]=position
-        self._motors[motor]["busy"]=True
+        self._motors[motor]["target"] = position
+        self._motors[motor]["busy"] = True
         self._loop.create_task(
-                self._http_session.put(
-                    f"{self._base_url}/Motors/TargetPositionInUnits?id={self._motors[motor]['index']}",
-                    json=position,
-                )
+            self._http_session.put(
+                f"{self._base_url}/Motors/TargetPositionInUnits?id={self._motors[motor]['index']}",
+                json=position,
+            )
         )
 
     @yaqd_core.set_action
     def home_motor(self, motor):
         self._loop.create_task(self._home_motor(motor))
-    
+
     async def _home_motor(self, motor):
-        await self._http_session.post(f"{self._base_url}/Motors/Home?id={self._motors[motor]['index']}")
-        self._motors[motor]["busy"]=True
+        await self._http_session.post(
+            f"{self._base_url}/Motors/Home?id={self._motors[motor]['index']}"
+        )
+        self._motors[motor]["busy"] = True
         while self.is_motor_busy(motor):
             logger.debug(f"Waiting because {motor} is busy")
             await asyncio.sleep(0.001)
@@ -91,7 +105,7 @@ class Topas4(yaqd_core.Base):
     def set_shutter(self, state):
         self._shutter_target = state
         self._loop.create_task(
-                self._http_session.put(
-                    f"{self._base_url}/ShutterInterlock/OpenCloseShutter", json=bool(state)
+            self._http_session.put(
+                f"{self._base_url}/ShutterInterlock/OpenCloseShutter", json=bool(state)
             )
         )
