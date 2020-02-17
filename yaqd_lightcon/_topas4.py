@@ -3,13 +3,13 @@ import pathlib
 from typing import Dict, Any
 
 import aiohttp
-import yaqd_core
+from yaqd_core import Base, logging
 
-logger = yaqd_core.logging.getLogger(__name__)
-logger.setLevel(yaqd_core.logging.INFO)
+logger = logging.getLogger(__name__)
+logger.setLevel(logging.INFO)
 
 
-class Topas4(yaqd_core.Base):
+class Topas4(Base):
     _kind = "topas4"
 
     def __init__(self, name: str, config: Dict[str, Any], config_filepath: pathlib.Path):
@@ -72,8 +72,8 @@ class Topas4(yaqd_core.Base):
     def get_motor_position(self, motor):
         return self._motors[motor]["position"]
 
-    @yaqd_core.set_action
     def set_motor_position(self, motor, position):
+        self._busy = True
         self._motors[motor]["target"] = position
         self._motors[motor]["busy"] = True
         self._loop.create_task(
@@ -83,8 +83,8 @@ class Topas4(yaqd_core.Base):
             )
         )
 
-    @yaqd_core.set_action
     def home_motor(self, motor):
+        self._busy = True
         self._loop.create_task(self._home_motor(motor))
 
     async def _home_motor(self, motor):
@@ -101,8 +101,8 @@ class Topas4(yaqd_core.Base):
     def get_shutter(self):
         return self._shutter_status
 
-    @yaqd_core.set_action
     def set_shutter(self, state):
+        self._busy = True
         self._shutter_target = state
         self._loop.create_task(
             self._http_session.put(
