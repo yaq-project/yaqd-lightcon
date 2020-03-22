@@ -1,6 +1,6 @@
 import asyncio
 import pathlib
-from typing import Dict, Any
+from typing import Dict, Any, List
 
 import aiohttp  # type: ignore
 from yaqd_core import Base, logging
@@ -10,6 +10,7 @@ logger.setLevel(logging.INFO)
 
 
 class Topas4(Base):
+    traits: List[str] = []
     _kind = "topas4"
 
     def __init__(self, name: str, config: Dict[str, Any], config_filepath: pathlib.Path):
