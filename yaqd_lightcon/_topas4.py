@@ -2,7 +2,7 @@ import asyncio
 import pathlib
 from typing import Dict, Any
 
-import aiohttp
+import aiohttp  # type: ignore
 from yaqd_core import Base, logging
 
 logger = logging.getLogger(__name__)
