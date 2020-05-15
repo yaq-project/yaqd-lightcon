@@ -5,10 +5,13 @@ from typing import Dict, Any, List
 import aiohttp  # type: ignore
 from yaqd_core import Base, logging
 
+from .__version__ import __branch__
+
 
 class Topas4(Base):
     traits: List[str] = []
     _kind = "topas4"
+    _version = "0.1.0" + f"+{__branch__}" if __branch__ else ""
 
     def __init__(self, name: str, config: Dict[str, Any], config_filepath: pathlib.Path):
         super().__init__(name, config, config_filepath)
