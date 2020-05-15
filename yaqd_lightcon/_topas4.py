@@ -5,9 +5,6 @@ from typing import Dict, Any, List
 import aiohttp  # type: ignore
 from yaqd_core import Base, logging
 
-logger = logging.getLogger(__name__)
-logger.setLevel(logging.INFO)
-
 
 class Topas4(Base):
     traits: List[str] = []
@@ -94,9 +91,9 @@ class Topas4(Base):
         )
         self._motors[motor]["busy"] = True
         while self.is_motor_busy(motor):
-            logger.debug(f"Waiting because {motor} is busy")
+            self.logger.debug(f"Waiting because {motor} is busy")
             await asyncio.sleep(0.001)
-        logger.debug(f"resetting {motor} shutter to {self._shutter_target}")
+        self.logger.debug(f"resetting {motor} shutter to {self._shutter_target}")
         self.set_shutter(self._shutter_target)
 
     def get_shutter(self):
