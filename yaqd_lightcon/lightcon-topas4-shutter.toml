@@ -1,0 +1,26 @@
+protocol = "lightcon-topas4-shutter"
+doc = """
+Expose a single light conversion shutter as a yaq daemon.
+"""
+traits = ["is-discrete", "is-daemon"]
+
+[links]
+source = "https://gitlab.com/yaq/yaqd-lightcon"
+bugtracker = "https://gitlab.com/yaq/yaqd-lightcon/issues"
+manufacturer = "http://topas4info.lightcon.com/"
+
+[installation]
+PyPI = "https://pypi.org/project/yaqd-lightcon"
+
+[config]
+topas4_host.type = "string"
+topas4_host.default = "127.0.0.1"
+topas4_host.doc = "Host/IP of the wintopas4 server"
+
+topas4_port.type = "int"
+topas4_port.default = 8000
+topas4_port.doc = "IP port of the wintopas4 server"
+
+serial.addendum = "Topas4 motor daemons MUST specify the serial number"
+
+identifiers.default = {"closed"=0, "open"=1}

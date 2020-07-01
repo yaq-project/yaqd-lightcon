@@ -13,13 +13,14 @@ before_script:
   - pip install -U virtualenv
   - virtualenv venv
   - source venv/bin/activate
-  - pip install -U twine
+  - pip install -U flit
   - pip install -U pytest
   - pip install -U mypy
   - pip install -U yaqc
   - pip install -U yaqd-core
+  - pip install -U yaq-traits
   - pip install -U aiohttp
-  - pip install -e .
+  - pip install .
 
 # test stage
 mypy:
@@ -29,15 +30,20 @@ mypy:
 entry:
   stage: test
   script:
-    - yaqd-topas4 --version
-    - yaqd-topas4 -h
+    - yaqd-lightcon-topas4-motor --version
+    - yaqd-lightcon-topas4-motor -h
+    - yaqd-lightcon-topas4-shutter --version
+    - yaqd-lightcon-topas4-shutter -h
+traits:
+  stage: test
+  script:
+    - for i in yaqd_lightcon/*.avpr; do yaq-traits check $i; done
 
 # deploy stage
-twine:
+flit:
   stage: deploy
   script:
-    - python setup.py sdist bdist_wheel
-    - twine upload dist/*
+    - flit publish
   artifacts:
     paths:
       - dist/*
