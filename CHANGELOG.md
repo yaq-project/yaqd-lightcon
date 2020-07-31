@@ -5,6 +5,13 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/).
 
 ## [Unreleased]
 
+## [2020.07.0]
+
+### Changed
+- Now uses Avro-RPC [Yep-107](https://yeps.yaq.fyi/107/)
+- Use Flit for distribution
+- Split topas4 into lightcon-topas4-motor and lightcon-topas4-shutter
+
 ## [2020.05.0]
 
 ### Added
