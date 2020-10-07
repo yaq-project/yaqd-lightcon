@@ -3,6 +3,7 @@ doc = """
 Expose a single light conversion shutter as a yaq daemon.
 """
 traits = ["is-discrete", "is-daemon"]
+hardware = ["lightcon:topas-800", "lightcon.topas-c"]
 
 [links]
 source = "https://gitlab.com/yaq/yaqd-lightcon"
