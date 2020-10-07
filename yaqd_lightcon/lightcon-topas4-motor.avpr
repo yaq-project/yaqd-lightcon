@@ -64,6 +64,10 @@
         }
     },
     "doc": "Expose a single light conversion motor as a yaq daemon.\n",
+    "hardware": [
+        "lightcon:topas-800",
+        "lightcon.topas-c"
+    ],
     "installation": {
         "PyPI": "https://pypi.org/project/yaqd-lightcon"
     },
@@ -177,8 +181,6 @@
             "response": "null"
         }
     },
-    "name": "is-homeable",
-    "protcol": "has-position",
     "protocol": "lightcon-topas4-motor",
     "requires": [],
     "state": {
@@ -199,10 +201,39 @@
             "type": "float"
         }
     },
+    "trait": "has-position",
     "traits": [
+        "has-limits",
         "is-homeable",
-        "is-daemon",
         "has-position",
-        "has-limits"
+        "is-daemon"
+    ],
+    "types": [
+        {
+            "fields": [
+                {
+                    "name": "shape",
+                    "type": {
+                        "items": "int",
+                        "type": "array"
+                    }
+                },
+                {
+                    "name": "typestr",
+                    "type": "string"
+                },
+                {
+                    "name": "data",
+                    "type": "bytes"
+                },
+                {
+                    "name": "version",
+                    "type": "int"
+                }
+            ],
+            "logicalType": "ndarray",
+            "name": "ndarray",
+            "type": "record"
+        }
     ]
 }

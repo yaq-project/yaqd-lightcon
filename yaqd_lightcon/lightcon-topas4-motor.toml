@@ -3,6 +3,7 @@ doc = """
 Expose a single light conversion motor as a yaq daemon.
 """
 traits = ["has-limits", "is-homeable", "is-daemon"]
+hardware = ["lightcon:topas-800", "lightcon.topas-c"]
 
 [links]
 source = "https://gitlab.com/yaq/yaqd-lightcon"
