@@ -3,10 +3,10 @@ import pathlib
 from typing import Dict, Any, List
 
 import aiohttp  # type: ignore
-from yaqd_core import DiscreteHardware
+from yaqd_core import IsDiscrete, IsDaemon
 
 
-class LightconTopas4Shutter(DiscreteHardware):
+class LightconTopas4Shutter(IsDiscrete, IsDaemon):
     _kind = "lightcon-topas4-shutter"
 
     def __init__(self, name: str, config: Dict[str, Any], config_filepath: pathlib.Path):
@@ -21,15 +21,16 @@ class LightconTopas4Shutter(DiscreteHardware):
             ) as resp:
                 try:
                     self._state["position"] = await resp.json()
-                    self._state["position_identifier"] = "open" if self._state["position"] else "closed"
+                    self._state["position_identifier"] = (
+                        "open" if self._state["position"] else "closed"
+                    )
                 except:
                     self.logger.error(await resp.read())
-            self._busy = (bool(self._state["position"]) != bool(self._state["destination"]))
+            self._busy = bool(self._state["position"]) != bool(self._state["destination"])
             if not self._busy:
                 await self._busy_sig.wait()
             else:
                 await asyncio.sleep(0.01)
-
 
     def _set_position(self, position):
         self._busy = True

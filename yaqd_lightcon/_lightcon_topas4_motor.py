@@ -3,10 +3,10 @@ import pathlib
 from typing import Dict, Any, List
 
 import aiohttp  # type: ignore
-from yaqd_core import ContinuousHardware
+from yaqd_core import IsHomeable, HasLimits, HasPosition, IsDaemon
 
 
-class LightconTopas4Motor(ContinuousHardware):
+class LightconTopas4Motor(IsHomeable, HasLimits, HasPosition, IsDaemon):
     _kind = "lightcon-topas4-motor"
 
     def __init__(self, name: str, config: Dict[str, Any], config_filepath: pathlib.Path):
@@ -51,7 +51,5 @@ class LightconTopas4Motor(ContinuousHardware):
     def home(self):
         self._busy = True
         self._loop.create_task(
-            self._http_session.post(
-                f"{self._base_url}/Motors/Home?id={self._motor_index}"
-            )
+            self._http_session.post(f"{self._base_url}/Motors/Home?id={self._motor_index}")
         )
