@@ -12,6 +12,7 @@ manufacturer = "http://topas4info.lightcon.com/"
 
 [installation]
 PyPI = "https://pypi.org/project/yaqd-lightcon"
+conda-forge = "https://anaconda.org/conda-forge/yaqd-lightcon"
 
 [config]
 topas4_host.type = "string"
