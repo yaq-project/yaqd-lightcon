@@ -60,7 +60,8 @@
         "lightcon.topas-c"
     ],
     "installation": {
-        "PyPI": "https://pypi.org/project/yaqd-lightcon"
+        "PyPI": "https://pypi.org/project/yaqd-lightcon",
+        "conda-forge": "https://anaconda.org/conda-forge/yaqd-lightcon"
     },
     "links": {
         "bugtracker": "https://gitlab.com/yaq/yaqd-lightcon/issues",
@@ -214,8 +215,8 @@
     },
     "traits": [
         "has-position",
-        "is-daemon",
-        "is-discrete"
+        "is-discrete",
+        "is-daemon"
     ],
     "types": [
         {
