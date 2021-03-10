@@ -294,8 +294,8 @@
     },
     "traits": [
         "has-position",
-        "is-discrete",
-        "is-daemon"
+        "is-daemon",
+        "is-discrete"
     ],
     "types": [
         {
