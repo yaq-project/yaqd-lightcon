@@ -2,7 +2,7 @@ protocol = "lightcon-topas4-motor"
 doc = """
 Expose a single light conversion motor as a yaq daemon.
 """
-traits = ["has-limits", "is-homeable", "is-daemon"]
+traits = ["has-limits", "is-discrete", "is-homeable", "is-daemon"]
 hardware = ["lightcon:topas-800", "lightcon.topas-c"]
 
 [links]
@@ -28,6 +28,7 @@ motor_index.default = 1
 motor_index.doc = "Index of the motor within the topas4 device"
 
 serial.addendum = "Topas4 motor daemons MUST specify the serial number"
+identifiers.addendum = "Topas4 motor daemons ignore identifiers config. Native 'named positions' are used instead"
 
 
 
