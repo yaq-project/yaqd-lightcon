@@ -7,6 +7,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/).
 
 ### Added
 - conda-forge as installation source
+- motor daemon implements is-discrete
 
 ### Fixed
 - added forgotten config options to is-daemon: enable, log_level, and log_to_file
