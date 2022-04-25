@@ -5,6 +5,11 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/).
 
 ## [Unreleased]
 
+## [2022.4.0]
+
+### Fixed
+- Use absolute difference when determining position identifiers
+
 ## [2021.10.0]
 
 ### Changed
@@ -37,7 +42,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/).
 ### Added
 - initial release
 
-[Unreleased]: https://gitlab.com/yaq/yaqd-horiba/-/compare/v2021.10.0...main
+[Unreleased]: https://gitlab.com/yaq/yaqd-horiba/-/compare/v2022.4.0...main
+[2022.4.0]: https://gitlab.com/yaq/yaqd-horiba/-/compare/v2021.10.0...v2022.4.0
 [2021.10.0]: https://gitlab.com/yaq/yaqd-horiba/-/compare/v2021.3.0...v2021.10.0
 [2021.3.0]: https://gitlab.com/yaq/yaqd-horiba/-/compare/v2020.11.0...v2021.3.0
 [2020.11.0]: https://gitlab.com/yaq/yaqd-horiba/-/compare/v2020.05.0...v2020.11.0

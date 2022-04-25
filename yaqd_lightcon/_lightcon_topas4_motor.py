@@ -44,7 +44,7 @@ class LightconTopas4Motor(IsHomeable, IsDiscrete, HasLimits, HasPosition, IsDaem
                 )
 
                 for i, val in self._position_identifiers.items():
-                    if self._state["position"] - val < 0.01:
+                    if abs(self._state["position"] - val) < 0.01:
                         self._state["position_identifier"] = i
                         break
                 else:
