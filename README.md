@@ -12,3 +12,7 @@ yaq daemons for Light Conversion hardware
 This package contains the following daemon(s):
 - [lightcon-topas4-motor](https://yaq.fyi/daemons/lightcon-topas4-motor/)
 - [lightcon-topas4-shutter](https://yaq.fyi/daemons/lightcon-topas4-shutter/)
+
+## maintainers
+
+- [Kent Meyer](https://github.com/kameyer226)
