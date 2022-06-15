@@ -6,8 +6,8 @@ traits = ["is-discrete", "is-daemon"]
 hardware = ["lightcon:topas-800", "lightcon.topas-c"]
 
 [links]
-source = "https://gitlab.com/yaq/yaqd-lightcon"
-bugtracker = "https://gitlab.com/yaq/yaqd-lightcon/issues"
+source = "https://github.com/yaq-project/yaqd-lightcon"
+bugtracker = "https://github.com/yaq-project/yaqd-lightcon/issues"
 manufacturer = "http://topas4info.lightcon.com/"
 
 [installation]
