@@ -1,0 +1,137 @@
+[hp_Delay_1]
+motor_index = 1
+serial = "P20464"
+port = 38701
+topas4_port = 8000
+
+[hp_Crystal_1]
+motor_index = 2
+serial = "P20464"
+port = 38702
+topas4_port = 8000
+
+[hp_Delay_2]
+motor_index = 3
+serial = "P20464"
+port = 38703
+topas4_port = 8000
+
+[hp_Crystal_2]
+motor_index = 4
+serial = "P20464"
+port = 38704
+topas4_port = 8000
+
+[hp_SHG_Crystal]
+motor_index = 5
+serial = "P20464"
+port = 38705
+topas4_port = 8000
+
+[hp_RP5_Stage]
+motor_index = 6
+serial = "P20464"
+port = 38706
+topas4_port = 8000
+
+[hp_WS_Wheel_1]
+motor_index = 7
+serial = "P20464"
+port = 38707
+topas4_port = 8000
+
+[hp_RP6_Stage]
+motor_index = 8
+serial = "P20464"
+port = 38708
+topas4_port = 8000
+
+[hp_Crystal_Stage_2]
+motor_index = 9
+serial = "P20464"
+port = 38709
+topas4_port = 8000
+
+[hp_WS_Wheel_2]
+motor_index = 10
+serial = "P20464"
+port = 38710
+topas4_port = 8000
+
+[twin1_Delay_1]
+motor_index = 1
+serial = "P20465"
+port = 38801
+topas4_port = 8004
+
+[twin1_Crystal_1]
+motor_index = 2
+serial = "P20465"
+port = 38802
+topas4_port = 8004
+
+[twin1_Delay_2]
+motor_index = 3
+serial = "P20465"
+port = 38803
+topas4_port = 8004
+
+[twin1_Crystal_2]
+motor_index = 4
+serial = "P20465"
+port = 38804
+topas4_port = 8004
+
+[twin1_RP_Stage]
+motor_index = 5
+serial = "P20465"
+port = 38805
+topas4_port = 8004
+
+[twin1_DFG_CS_1]
+motor_index = 6
+serial = "P20465"
+port = 38806
+topas4_port = 8004
+
+[twin2_Delay_1]
+motor_index = 1
+serial = "PA0465"
+port = 38901
+topas4_port = 8008
+
+[twin2_Crystal_1]
+motor_index = 2
+serial = "PA0465"
+port = 38902
+topas4_port = 8008
+
+[twin2_Delay_2]
+motor_index = 3
+serial = "PA0465"
+port = 38903
+topas4_port = 8008
+
+[twin2_Crystal_2]
+motor_index = 4
+serial = "PA0465"
+port = 38904
+topas4_port = 8008
+
+[twin2_SHG_Crystal]
+motor_index = 5
+serial = "PA0465"
+port = 38905
+topas4_port = 8008
+
+[twin2_RP_Stage]
+motor_index = 6
+serial = "PA0465"
+port = 38906
+topas4_port = 8008
+
+[twin2_DFG_CS_1]
+motor_index = 7
+serial = "PA0465"
+port = 38907
+topas4_port = 8008
