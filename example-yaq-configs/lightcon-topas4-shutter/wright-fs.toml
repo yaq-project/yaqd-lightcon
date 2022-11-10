@@ -1,0 +1,9 @@
+[w1_shutter]
+port = 39701
+topas4_port = 8004
+serial = "10743"
+
+[w2_shutter]
+port = 39702
+topas4_port = 8000
+serial = "10742"

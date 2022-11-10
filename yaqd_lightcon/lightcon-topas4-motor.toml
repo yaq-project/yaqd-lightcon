@@ -3,12 +3,13 @@ doc = """
 Expose a single light conversion motor as a yaq daemon.
 """
 traits = ["has-limits", "is-discrete", "is-homeable", "is-daemon"]
-hardware = ["lightcon:topas-800", "lightcon.topas-c"]
+hardware = ["lightcon:topas-800", "lightcon:topas-c"]
 
 [links]
 source = "https://github.com/yaq-project/yaqd-lightcon"
 bugtracker = "https://github.com/yaq-project/yaqd-lightcon/issues"
 manufacturer = "http://topas4info.lightcon.com/"
+example-configs = "https://github.com/yaq-project/yaqd-lightcon/tree/main/example-yaq-configs/lightcon-topas4-motor" 
 
 [installation]
 PyPI = "https://pypi.org/project/yaqd-lightcon"

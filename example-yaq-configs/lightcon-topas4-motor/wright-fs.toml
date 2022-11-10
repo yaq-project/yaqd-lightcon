@@ -1,0 +1,83 @@
+[w1_crystal_1]
+motor_index=1
+port = 39501
+serial = "10743"
+topas4_port=8004
+
+[w1_delay_1]
+motor_index=2
+port = 39502
+serial = "10743"
+topas4_port=8004
+
+[w1_crystal_2]
+motor_index=3
+port = 39503
+serial = "10743"
+topas4_port=8004
+
+[w1_delay_2]
+motor_index=4
+port = 39504
+serial = "10743"
+topas4_port=8004
+
+[w1_mixer_1]
+motor_index=5
+port = 39505
+serial = "10743"
+topas4_port=8004
+
+[w1_mixer_2]
+motor_index=6
+port = 39506
+serial = "10743"
+topas4_port=8004
+
+[w1_mixer_3]
+motor_index=7
+port = 39507
+serial = "10743"
+topas4_port=8004
+
+[w2_crystal_1]
+motor_index=1
+port = 39601
+serial = "10742"
+topas4_port=8000
+
+[w2_delay_1]
+motor_index=2
+port = 39602
+serial = "10742"
+topas4_port=8000
+
+[w2_crystal_2]
+motor_index=3
+port = 39603
+serial = "10742"
+topas4_port=8000
+
+[w2_delay_2]
+motor_index=4
+port = 39604
+serial = "10742"
+topas4_port=8000
+
+[w2_mixer_1]
+motor_index=5
+port = 39605
+serial = "10742"
+topas4_port=8000
+
+[w2_mixer_2]
+motor_index=6
+port = 39606
+serial = "10742"
+topas4_port=8000
+
+[w2_mixer_3]
+motor_index=7
+port = 39607
+serial = "10742"
+topas4_port=8000
