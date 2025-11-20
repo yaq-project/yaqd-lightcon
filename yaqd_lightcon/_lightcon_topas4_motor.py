@@ -1,24 +1,26 @@
+from __future__ import annotations
+
 import asyncio
 import pathlib
 import os
-from typing import Dict, Any, List
+from typing import Any
 
 from yaqd_core import IsHomeable, IsDiscrete, HasLimits, HasPosition, IsDaemon
 from ._aiohttp import TaskSet, Client
 
+
 class LightconTopas4Motor(IsHomeable, IsDiscrete, HasLimits, HasPosition, IsDaemon):
     _kind = "lightcon-topas4-motor"
-    __sessions = {}
+    client = Client
 
-    def __init__(self, name: str, config: Dict[str, Any], config_filepath: pathlib.Path):
+    def __init__(self, name: str, config: dict[str, Any], config_filepath: pathlib.Path):
         super().__init__(name, config, config_filepath)
         self.logger.info(f"PID: {os.getpid()}")
         self._base_url = f"http://{config['topas4_host']}:{config['topas4_port']}/{config['serial']}/v0/PublicApi"
         self._motor_index = config["motor_index"]
-        self.client = Client
         self.client.open(self.config["port"])
         self._http_session = self.client.session
-        self._position_identifiers: Dict[str, float] = {}
+        self._position_identifiers: dict[str, float] = {}
         self.tasks = TaskSet()
 
     async def update_state(self):
@@ -42,7 +44,7 @@ class LightconTopas4Motor(IsHomeable, IsDiscrete, HasLimits, HasPosition, IsDaem
                 offset = json["Affix"]
                 scale = json["Factor"]
 
-                self._position_identifiers: Dict[str, float] = {
+                self._position_identifiers: dict[str, float] = {
                     i["Name"]: i["Position"] / 8 / scale + offset for i in json["NamedPositions"]
                 }
 
