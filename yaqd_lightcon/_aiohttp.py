@@ -1,17 +1,18 @@
+from __future__ import annotations
+
 import aiohttp  # type: ignore
 import asyncio
 
-from typing import Coroutine
 
 
-class TaskSet(set):
+class TaskSet(set[asyncio.Task]):
     """container class for tasks to keep strong references"""
 
     def add(self, task: asyncio.Task):
         super().add(task)
         task.add_done_callback(self.discard)
 
-    def add_coro(self, coro: Coroutine):
+    def add_coro(self, coro):
         """create task and add to running loop"""
         task = asyncio.get_running_loop().create_task(coro)
         self.add(task)
@@ -19,8 +20,7 @@ class TaskSet(set):
 
 class Client:
     """a single client for all daemons sessions"""
-
-    daemons = set()  # keep track of connected daemons
+    daemons:set[int] = set()  # keep track of connected daemons
     session = None  # to be initialized
     tasks = TaskSet()
 
