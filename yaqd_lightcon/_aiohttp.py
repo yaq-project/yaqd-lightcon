@@ -4,8 +4,10 @@ import aiohttp  # type: ignore
 import asyncio
 
 
-class TaskSet(set[asyncio.Task]):
+class TaskSet(set):
     """container class for tasks to keep strong references"""
+    def __init__(self, iterable=()) -> set[asyncio.Task]:
+        super().__init__(iterable)
 
     def add(self, task: asyncio.Task):
         super().add(task)
