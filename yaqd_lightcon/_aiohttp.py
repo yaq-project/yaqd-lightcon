@@ -4,7 +4,6 @@ import aiohttp  # type: ignore
 import asyncio
 
 
-
 class TaskSet(set[asyncio.Task]):
     """container class for tasks to keep strong references"""
 
@@ -20,7 +19,8 @@ class TaskSet(set[asyncio.Task]):
 
 class Client:
     """a single client for all daemons sessions"""
-    daemons:set[int] = set()  # keep track of connected daemons
+
+    daemons: set[int] = set()  # keep track of connected daemons
     session = None  # to be initialized
     tasks = TaskSet()
 
