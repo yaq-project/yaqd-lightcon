@@ -18,7 +18,7 @@ class LightconTopas4Motor(IsHomeable, IsDiscrete, HasLimits, HasPosition, IsDaem
         self.logger.info(f"PID: {os.getpid()}")
         self._base_url = f"http://{config['topas4_host']}:{config['topas4_port']}/{config['serial']}/v0/PublicApi"
         self._motor_index = config["motor_index"]
-        self.client.open(self.config["port"])
+        self.client.open(config["port"])
         self._http_session = self.client.session
         self._position_identifiers: dict[str, float] = {}
         self.tasks = TaskSet()
