@@ -6,11 +6,12 @@ from typing import Coroutine
 
 class TaskSet(set):
     """container class for tasks to keep strong references"""
-    def add(self, task:asyncio.Task):
+
+    def add(self, task: asyncio.Task):
         super().add(task)
         task.add_done_callback(self.discard)
 
-    def add_coro(self, coro:Coroutine):
+    def add_coro(self, coro: Coroutine):
         """create task and add to running loop"""
         task = asyncio.get_running_loop().create_task(coro)
         self.add(task)
@@ -18,6 +19,7 @@ class TaskSet(set):
 
 class Client:
     """a single client for all daemons sessions"""
+
     daemons = set()  # keep track of connected daemons
     session = None  # to be initialized
     tasks = TaskSet()
@@ -40,5 +42,3 @@ class Client:
     async def _close(cls) -> None:
         if (cls.session is not None) and (not cls.session.closed):
             await cls.session.__aexit__()
-
-
