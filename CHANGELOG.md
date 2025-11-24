@@ -5,6 +5,9 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/).
 
 ## [Unreleased]
 
+### Changed
+- redundant connections with lightcon motors removed
+
 ## [2022.11.0]
 
 ### Added
