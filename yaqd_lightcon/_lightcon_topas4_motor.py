@@ -1,12 +1,11 @@
-from __future__ import annotations
-
 import asyncio
 import pathlib
 import os
 from typing import Any
 
 from yaqd_core import IsHomeable, IsDiscrete, HasLimits, HasPosition, IsDaemon
-from ._aiohttp import TaskSet, Client
+from ._aiohttp import Client
+from ._taskset import TaskSet
 
 
 class LightconTopas4Motor(IsHomeable, IsDiscrete, HasLimits, HasPosition, IsDaemon):
