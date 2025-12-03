@@ -2,7 +2,6 @@ from __future__ import annotations
 
 import asyncio
 import pathlib
-import os
 from typing import Any
 
 from yaqd_core import IsHomeable, IsDiscrete, HasLimits, HasPosition, IsDaemon
@@ -16,7 +15,6 @@ class LightconTopas4Motor(IsHomeable, IsDiscrete, HasLimits, HasPosition, IsDaem
 
     def __init__(self, name: str, config: dict[str, Any], config_filepath: pathlib.Path):
         super().__init__(name, config, config_filepath)
-        self.logger.info(f"PID: {os.getpid()}")
         self._base_url = f"http://{config['topas4_host']}:{config['topas4_port']}/{config['serial']}/v0/PublicApi"
         self._motor_index = config["motor_index"]
         self.client.open(config["port"])
