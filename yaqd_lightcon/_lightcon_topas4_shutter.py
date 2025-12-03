@@ -2,17 +2,21 @@ import asyncio
 import pathlib
 from typing import Dict, Any, List
 
-import aiohttp  # type: ignore
 from yaqd_core import IsDiscrete, IsDaemon
+from ._aiohttp import Client
+from ._taskset import TaskSet
 
 
 class LightconTopas4Shutter(IsDiscrete, IsDaemon):
     _kind = "lightcon-topas4-shutter"
+    client = Client
 
     def __init__(self, name: str, config: Dict[str, Any], config_filepath: pathlib.Path):
         super().__init__(name, config, config_filepath)
         self._base_url = f"http://{config['topas4_host']}:{config['topas4_port']}/{config['serial']}/v0/PublicApi"
-        self._http_session = aiohttp.ClientSession()
+        self.client.open(config["port"])
+        self._http_session = self.client.session
+        self.tasks = TaskSet()
 
     async def update_state(self):
         while True:
@@ -34,8 +38,13 @@ class LightconTopas4Shutter(IsDiscrete, IsDaemon):
 
     def _set_position(self, position):
         self._busy = True
-        self._loop.create_task(
-            self._http_session.put(
-                f"{self._base_url}/ShutterInterlock/OpenCloseShutter", json=bool(position)
+        self.tasks.add(
+            self._loop.create_task(
+                self._http_session.put(
+                    f"{self._base_url}/ShutterInterlock/OpenCloseShutter", json=bool(position)
+                )
             )
         )
+
+    def close(self):
+        self.client.close(self._config["port"])
